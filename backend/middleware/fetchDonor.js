@@ -8,7 +8,7 @@ const fetchDonor = (req, res, next) => {
     }
 
     const decoded = jwt.verify(auth, process.env.JWT_SECRET);
-    req.donorid = decoded.donorid;
+    req.donorid = decoded.donor_id;
     next();
 }
 

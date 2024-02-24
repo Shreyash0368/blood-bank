@@ -11,7 +11,10 @@ const DonorSchema = new Schema({
         unique: true,
         required: true,
     },
-
+    password: {
+        type: String,
+        required: true
+    },
     blood_type : {
         type: String,
         required: true

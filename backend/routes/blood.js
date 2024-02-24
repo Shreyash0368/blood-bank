@@ -15,7 +15,7 @@ router.post('/createUnit', async (req, res) => {
     }
 })
 
-router.get('/getUnitsByType', async (req, res) => {
+router.get('/getByType', async (req, res) => {
     const type = req.body.type;
 
     try {
@@ -26,7 +26,7 @@ router.get('/getUnitsByType', async (req, res) => {
     }
 })
 
-router.get('/getUnitsById', async (req, res) => {
+router.get('/getById', async (req, res) => {
     const id = req.body.donor_id;                             
 
     try {

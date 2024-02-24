@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const Staff = require('../models/Staff');
+const fetchStaff = require('../middleware/fetchStaff');
 
 router.post('/signup', async (req, res) => {
     //TODO: run validator 
@@ -28,16 +29,14 @@ router.post('/login', async (req, res) => {
     //TODO: run validator 
 
     try {
-        let {email, password} = req.body;
-        
-
+        let {email, password} = req.body;   
         const staff = await Staff.findOne({email});
 
         if (!staff) {
             res.status(401).json({success: false, message: "Invalid Credentials"});
         }
 
-        const result = bcrypt.compare(password, staff.password);
+        const result = await bcrypt.compare(password, staff.password);
 
         if (!result) res.status(401).json({success: false, message: "Invalid Credentials"});
 
@@ -48,6 +47,16 @@ router.post('/login', async (req, res) => {
         res.status(201).json({success: true, token}).send();
     } catch (error) {
         res.status(500).json({success: false, message: error}).send();
+    }
+})
+
+router.get('/getStaff', fetchStaff, async (req, res) => {
+    let userid = req.userid;
+    try {
+        const user = await Staff.findById(userid).select("-password");
+        res.status(201).json({success: true, user}).send();
+    } catch (error) {
+        res.status(400).json({success: false, error}).send();        
     }
 })
 

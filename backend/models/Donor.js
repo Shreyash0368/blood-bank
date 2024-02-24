@@ -9,7 +9,7 @@ const DonorSchema = new Schema({
     email : {
         type: String,
         unique: true,
-        default: ""        
+        required: true,
     },
 
     blood_type : {
@@ -23,7 +23,11 @@ const DonorSchema = new Schema({
     DOB : {
         type: Date,
         required: true
-    }     
+    }, 
+    donations : {
+        type: Array,
+        default: []
+    }    
 })
 
 module.exports = mongoose.model('Donor', DonorSchema);

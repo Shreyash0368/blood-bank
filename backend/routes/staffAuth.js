@@ -16,7 +16,10 @@ router.post('/signup', async (req, res) => {
         const savedStaff = await newStaff.save();
 
         const data = {
-            userid: savedStaff.id
+            userid: savedStaff.id,
+            role: "staff",
+            iat: Date.now(),
+            exp: Date.now() + process.env.EXPIRY_TIME
         }
         const token = jwt.sign(data, process.env.JWT_SECRET);
         res.status(201).json({success: true, token}).send();
@@ -41,7 +44,10 @@ router.post('/login', async (req, res) => {
         if (!result) res.status(401).json({success: false, message: "Invalid Credentials"});
 
         const data = {
-            userid: staff.id
+            userid: staff.id,
+            role: "staff",
+            iat: Date.now(),
+            exp: Date.now() + parseInt(process.env.EXPIRY_TIME)
         }
         const token = jwt.sign(data, process.env.JWT_SECRET);
         res.status(201).json({success: true, token}).send();
@@ -54,7 +60,7 @@ router.get('/getStaff', fetchStaff, async (req, res) => {
     let userid = req.userid;
     try {
         const user = await Staff.findById(userid).select("-password");
-        res.status(201).json({success: true, user}).send();
+        res.status(201).json({success: true, user, role: req.role}).send();
     } catch (error) {
         res.status(400).json({success: false, error}).send();        
     }

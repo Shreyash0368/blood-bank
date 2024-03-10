@@ -15,7 +15,10 @@ router.post('/createDonor', async(req, res) => {
         const savedDonor = await newDonor.save();
 
         const data = {
-            donorid : savedDonor.id
+            donorid : savedDonor.id,
+            role: "donor",
+            iat: Date.now(),
+            exp: Date.now() + parseInt(process.env.EXPIRY_TIME)
         }
 
         const token = jwt.sign(data, process.env.JWT_SECRET);
@@ -34,7 +37,10 @@ router.post('/login', async (req, res) => {
         if (!bcrypt.compareSync(password, donor.password)) res.sendStatus(401);
         
         const data = {
-            donor_id : donor.id
+            donor_id : donor.id,
+            role: "donor",
+            iat: Date.now(),
+            exp: Date.now() + parseInt(process.env.EXPIRY_TIME)
         }
         const auth = jwt.sign(data, process.env.JWT_SECRET);
  
@@ -49,7 +55,7 @@ router.get('/getDonor', fetchDonor, async(req, res) => {
 
     try {
         const donor = await  Donor.findById(donorid).select("-password");
-        res.status(201).json({success: true, donor}).send();
+        res.status(201).json({success: true, donor, role: req.role}).send();
     } catch (error) {
         res.status(401).json({success: false, error}).send();        
     }

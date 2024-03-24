@@ -11,6 +11,9 @@ const AppointmentSchema = new Schema({
     },
     donor_name: {
         type: String
+    },
+    units: {
+        type: Number
     }
     
 })

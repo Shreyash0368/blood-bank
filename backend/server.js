@@ -1,5 +1,6 @@
 const express = require('express');
 const connectDB = require('./config');
+const cors = require('cors')
 const staffRouter = require('./routes/staffAuth');
 const donorRouter = require('./routes/donorAuth');
 const bloodRouter = require('./routes/blood');
@@ -7,7 +8,11 @@ const appointmentRouter = require('./routes/appointemnts');
 const requestRouter = require('./routes/requests');
 
 const app = express();
+const corsOptions = {
+    origin: 'http://localhost:5173'
+}
 app.use(express.json())
+app.use(cors(corsOptions))
 const port = process.env.PORT;
 
 // connect to DB

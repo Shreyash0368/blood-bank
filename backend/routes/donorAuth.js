@@ -42,9 +42,9 @@ router.post('/login', async (req, res) => {
             iat: Date.now(),
             exp: Date.now() + parseInt(process.env.EXPIRY_TIME)
         }
-        const auth = jwt.sign(data, process.env.JWT_SECRET);
+        const token = jwt.sign(data, process.env.JWT_SECRET);
  
-        res.status(200).json({success: true, donorAuth: auth}).send();
+        res.status(200).json({success: true, token}).send();
     } catch (error) {
         res.status(500).json({success: false, error}).send();        
     }

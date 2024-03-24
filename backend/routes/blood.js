@@ -36,5 +36,13 @@ router.get('/getById', async (req, res) => {
         res.status(400).json({success: false, error});
     }
 })
+router.get('/getAll', async (req, res) => {
+    try {
+        const units = await BloodUnit.find();
+        res.status(201).json({success: true, units: units}).send();
+    } catch (error) {
+        res.status(400).json({success: false, error});
+    }
+})
 
 module.exports = router;

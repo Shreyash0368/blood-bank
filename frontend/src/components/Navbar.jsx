@@ -9,22 +9,39 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../features/donor/userSlice";
 
 export default function Navbar() {
-  const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
-
-  const handleChange = (event) => {
-    setAuth(event.target.checked);
-  };
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
+  const handleProfile = () => {
+    setAnchorEl(null);
+    navigate("/donor/profile");
+  };
+
+  const handleDonations = () => {
+    setAnchorEl(null);
+    navigate("/donor/donations");
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("bloodBankAuth");
+    navigate("/");
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
 
   return (
     <div style={{ padding: "0 10px" }}>
@@ -43,9 +60,13 @@ export default function Navbar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             BloodBank
           </Typography>
-          {auth && (
-            <div>
-              {localStorage.getItem("bloodBankAuth") ? (
+
+          <div>
+            {localStorage.getItem("bloodBankAuth") ? (
+              <>
+                <Button onClick={handleLogout} style={{ color: "white" }}>
+                  Logout
+                </Button>                
                 <IconButton
                   size="large"
                   aria-label="account of current user"
@@ -56,33 +77,48 @@ export default function Navbar() {
                 >
                   <AccountCircle />
                 </IconButton>
-              ) : (
-                <>
-                  <Link to={'/staffLogin'}> <Button style={{ color: "white" }}>Staff Login</Button> </Link>
-                  <Link to={'/donorLogin'} > <Button style={{ color: "white" }}>Donor Login</Button> </Link>
-                </>
-              )}
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={() => {
+                    navigate("/staffLogin");
+                  }}
+                  style={{ color: "white" }}
+                >
+                  Staff Login
+                </Button>
 
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My Donations</MenuItem>
-              </Menu>
-            </div>
-          )}
+                <Button
+                  onClick={() => {
+                    navigate("/donorLogin");
+                  }}
+                  style={{ color: "white" }}
+                >
+                  Donor Login
+                </Button>
+              </>
+            )}
+
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleProfile}>Profile</MenuItem>
+              <MenuItem onClick={handleDonations}>My Donations</MenuItem>
+            </Menu>
+          </div>
         </Toolbar>
       </AppBar>
     </div>

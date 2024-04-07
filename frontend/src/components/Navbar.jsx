@@ -14,34 +14,13 @@ import { useDispatch } from "react-redux";
 import { logout } from "../features/donor/userSlice";
 
 export default function Navbar() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleProfile = () => {
-    setAnchorEl(null);
-    navigate("/donor/profile");
-  };
-
-  const handleDonations = () => {
-    setAnchorEl(null);
-    navigate("/donor/donations");
-  };
-
+  
   const handleLogout = () => {
-    dispatch(logout());
-    localStorage.removeItem("bloodBankAuth");
+    dispatch(logout());    
     navigate("/");
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
+  };  
 
   return (
     <div style={{ padding: "0 10px" }}>
@@ -72,10 +51,10 @@ export default function Navbar() {
                   aria-label="account of current user"
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
-                  onClick={handleMenu}
+                  onClick={() => {navigate('donor/profile')}}
                   color="inherit"
                 >
-                  <AccountCircle />
+                  <AccountCircle/>
                 </IconButton>
               </>
             ) : (
@@ -98,26 +77,7 @@ export default function Navbar() {
                   Donor Login
                 </Button>
               </>
-            )}
-
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleProfile}>Profile</MenuItem>
-              <MenuItem onClick={handleDonations}>My Donations</MenuItem>
-            </Menu>
+            )}            
           </div>
         </Toolbar>
       </AppBar>

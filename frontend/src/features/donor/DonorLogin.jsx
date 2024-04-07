@@ -35,9 +35,11 @@ export default function DonorLogin() {
       if (!response.ok) throw new Error('signup error');
   
       const donor = await response.json();
-      localStorage.setItem('bloodBankAuth', donor.token);
-      dispatch(fetchDonor(donor.token));
+      
+      // setting auth token and donor data into redux and localstorage 
       dispatch(setAuth(donor.token));
+      dispatch(fetchDonor(donor.token));      
+      localStorage.setItem('bloodBankAuth', donor.token);
       navigate('/');      
   
     } catch (error) {

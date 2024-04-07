@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Appointments = require('../models/Appointments')
-const fetchDonor = require('../middleware/fetchDonor')
+const decodeAuth = require('../middleware/decodeAuth')
 
-router.post('/addAppointment', fetchDonor, async (req, res) => {
+router.post('/addAppointment', decodeAuth, async (req, res) => {
     const donor_id = req.donorid;
     const {date, donor_name} = req.body;
 
@@ -17,7 +17,7 @@ router.post('/addAppointment', fetchDonor, async (req, res) => {
 
 })
 
-router.get('/getAppointment',fetchDonor, async (req, res) => {
+router.get('/getAppointment',decodeAuth, async (req, res) => {
     const donor_id = req.donor_id;
     try {
         const appointment = await Appointments.find({donor_id});

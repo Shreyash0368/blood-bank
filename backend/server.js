@@ -6,6 +6,7 @@ const donorRouter = require('./routes/donorAuth');
 const bloodRouter = require('./routes/blood');
 const appointmentRouter = require('./routes/appointemnts');
 const requestRouter = require('./routes/requests');
+const roleRouter = require('./routes/role')
 
 const app = express();
 const corsOptions = {
@@ -30,3 +31,4 @@ app.use('/api/donor', donorRouter);
 app.use('/api/blood', bloodRouter);
 app.use('/api/appointments', appointmentRouter);
 app.use('/api/requests', requestRouter);
+app.use('/api/user', roleRouter);

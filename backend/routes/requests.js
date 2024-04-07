@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Requests = require('../models/Requests')
-const fetchStaff = require('../middleware/fetchStaff')
+const decodeAuth = require('../middleware/decodeAuth')
 
-router.post('/addRequest',fetchStaff, async (req, res) => {
+router.post('/addRequest',decodeAuth, async (req, res) => {
     const staff_id = req.userid;
     const role = req.role;
 

@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const Staff = require('../models/Staff');
-const fetchStaff = require('../middleware/fetchStaff');
+const decodeAuth = require('../middleware/decodeAuth');
 
 router.post('/signup', async (req, res) => {
     //TODO: run validator 
@@ -16,15 +16,15 @@ router.post('/signup', async (req, res) => {
         const savedStaff = await newStaff.save();
 
         const data = {
-            userid: savedStaff.id,
+            user_id: savedStaff.id,
             role: "staff",
             iat: Date.now(),
             exp: Date.now() + process.env.EXPIRY_TIME
         }
         const token = jwt.sign(data, process.env.JWT_SECRET);
-        res.status(201).json({success: true, token}).send();
+        res.status(201).send({success: true, token});
     } catch (error) {
-        res.status(500).json({success: false, message: error}).send();
+        res.status(500).send({success: false, message: error});
     }
 })
 
@@ -44,7 +44,7 @@ router.post('/login', async (req, res) => {
         if (!result) res.status(401).json({success: false, message: "Invalid Credentials"});
 
         const data = {
-            userid: staff.id,
+            user_id: staff.id,
             role: "staff",
             iat: Date.now(),
             exp: Date.now() + parseInt(process.env.EXPIRY_TIME)
@@ -56,8 +56,8 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.get('/getStaff', fetchStaff, async (req, res) => {
-    let userid = req.userid;
+router.get('/getStaff', decodeAuth, async (req, res) => {
+    let userid = req.user_id;
     try {
         const user = await Staff.findById(userid).select("-password");
         res.status(201).json({success: true, user, role: req.role}).send();

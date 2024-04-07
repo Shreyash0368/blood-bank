@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const fetchDonor = (req, res, next) => {
+const decodeAuth = (req, res, next) => {
     const auth = req.headers.authorization;
 
     if (!auth) {
@@ -14,7 +14,7 @@ const fetchDonor = (req, res, next) => {
             res.status(422).json({success: false, message: "Invalid or Expired Auth Token"}).send();  
             return;    
         }
-        req.donorid = decoded.donor_id;
+        req.user_id = decoded.user_id;
         req.role = decoded.role;
         next();
         
@@ -25,4 +25,4 @@ const fetchDonor = (req, res, next) => {
 
 }
 
-module.exports = fetchDonor;
+module.exports = decodeAuth;

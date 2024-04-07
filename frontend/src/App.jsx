@@ -7,13 +7,10 @@ import BloodTypePage from "./features/bloddUnits/BloodTypePage";
 import DonorSignUp from "./features/donor/DonorSignup";
 import DonorLogin from "./features/donor/DonorLogin";
 import StaffLogin from "./features/staff/StaffLogin";
+import ProfilePage from "./features/donor/ProfilePage";
 
-const NotFound = () => {
-  // Display a "Page Not Found" message or handle it as needed
-  return <h1>404: Not Found</h1>;
-};
 
-function App() {
+function App() {  
   return (
     <>
       <Router>
@@ -25,6 +22,7 @@ function App() {
             <Route exact path='/donorSignup' element={<DonorSignUp />} />
             <Route exact path='/donorLogin' element={<DonorLogin />} />
             <Route exact path='/staffLogin' element={<StaffLogin />} />
+            <Route exact path="/donor/profile/" element={<ProfilePage />}/>
           </Routes>
       </Router>
     </>

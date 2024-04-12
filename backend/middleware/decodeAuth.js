@@ -11,7 +11,7 @@ const decodeAuth = (req, res, next) => {
     try {
         const decoded = jwt.verify(auth, process.env.JWT_SECRET);
         if (decoded.iat > Date.now() || decoded.exp < Date.now()) {
-            res.status(422).json({success: false, message: "Invalid or Expired Auth Token"}).send();  
+            res.status(401).json({success: false, message: "Invalid or Expired Auth Token"}).send();  
             return;    
         }
         req.user_id = decoded.user_id;

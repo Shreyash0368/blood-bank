@@ -11,7 +11,7 @@ const initialState = {
 
 export const fetchDonor = createAsyncThunk(
   "user/fetchDonor",
-  async (authToken) => {
+  async (authToken, thunkAPI) => {
     try {
       const donor = await fetch(
         `${import.meta.env.VITE_SERVER_PATH}/donor/getDonor`,
@@ -24,17 +24,19 @@ export const fetchDonor = createAsyncThunk(
       );
 
       if (!donor.ok) {
-        if (donor.status === 422) {
-          return thunkAPI.rejectWithValue('expired');
-        }
-        else {
-          throw new Error("error");
-        }
+        console.log({
+          status: donor.status,
+          message: donor.statusText,
+        });
+        return thunkAPI.rejectWithValue({
+          status: donor.status,
+          message: donor.statusText,
+        });
       }
 
-      const donorData = await donor.json();
+      const userData = await donor.json();
 
-      return donorData;
+      return userData;
     } catch (error) {
       console.log(error);
       return thunkAPI.rejectWithValue(error.message);
@@ -42,30 +44,73 @@ export const fetchDonor = createAsyncThunk(
   }
 );
 
-export const fetchRole = createAsyncThunk("user/fetchRole", async (authToken) => {
-  try {
-    const role = await fetch(
-      `${import.meta.env.VITE_SERVER_PATH}/user/getRole`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: authToken,
-        },
+export const fetchRole = createAsyncThunk(
+  "user/fetchRole",
+  async (authToken, thunkAPI) => {
+    try {
+      const role = await fetch(
+        `${import.meta.env.VITE_SERVER_PATH}/user/getRole`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: authToken,
+          },
+        }
+      );
+
+      if (!role.ok) {
+        console.log({
+          status: role.status,
+          message: role.statusText,
+        });
+        return thunkAPI.rejectWithValue({
+          status: role.status,
+          message: role.statusText,
+        });
       }
-    );
 
-    if (!role.ok) {      
-      throw new Error("error");      
+      const roleVal = await role.json();
+      return roleVal;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.message);
     }
-    
-    const roleVal = await role.json();
-    return roleVal;
-  } catch (error) {
-    console.log(error);
-    return thunkAPI.rejectWithValue(error.message);
   }
+);
 
-})
+export const fetchStaff = createAsyncThunk(
+  "user/fetchStaff",
+  async (authToken, thunkAPI) => {
+    try {
+      const staff = await fetch(
+        `${import.meta.env.VITE_SERVER_PATH}/staff/getStaff`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: authToken,
+          },
+        }
+      );
+
+      if (!staff.ok) {
+        console.log({
+          status: staff.status,
+          message: staff.statusText,
+        });
+        return thunkAPI.rejectWithValue({
+          status: staff.status,
+          message: staff.statusText,
+        });
+      }
+
+      const staffData = await staff.json();
+      return staffData;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 
 export const userSlice = createSlice({
   name: "user",
@@ -82,7 +127,7 @@ export const userSlice = createSlice({
       // clearing local storage
       localStorage.removeItem("bloodBankAuth");
       localStorage.removeItem("role");
-      localStorage.removeItem("donorData");
+      localStorage.removeItem("userData");
     },
     setAuth(state, action) {
       state.auth = action.payload;
@@ -92,12 +137,11 @@ export const userSlice = createSlice({
       state.data = action.payload.donor;
       state.id = action.payload.donor._id;
     },
-    setDonorFromLocal(state, action) {
-      state.data = JSON.parse(localStorage.getItem('donorData'));
-      state.role = localStorage.getItem('role');
-      state.id = JSON.parse(localStorage.getItem('donorData'))._id;
-    },    
-
+    setUserFromLocal(state, action) {
+      state.data = JSON.parse(localStorage.getItem("userData"));
+      state.role = localStorage.getItem("role");
+      state.id = JSON.parse(localStorage.getItem("userData"))._id;
+    },
   },
   extraReducers(builder) {
     builder
@@ -105,11 +149,17 @@ export const userSlice = createSlice({
         state.data = action.payload.donor;
         state.role = action.payload.role;
         state.id = action.payload.donor._id;
-        state.status = "auth-fetched";        
+        state.status = "auth-fetched";
 
-        if (localStorage.getItem('donorData') === null || (localStorage.getItem('role') ) === null) {
-          localStorage.setItem('donorData', JSON.stringify(action.payload.donor));
-          localStorage.setItem('role', action.payload.role);
+        if (
+          localStorage.getItem("userData") === null ||
+          localStorage.getItem("role") === null
+        ) {
+          localStorage.setItem(
+            "userData",
+            JSON.stringify(action.payload.donor)
+          );
+          localStorage.setItem("role", action.payload.role);
         }
       })
       .addCase(fetchDonor.pending, (state, action) => {
@@ -119,18 +169,40 @@ export const userSlice = createSlice({
         state.status = "rejected";
         state.error = action.error.message;
       })
+      .addCase(fetchStaff.fulfilled, (state, action) => {
+        state.data = action.payload.user;
+        state.role = action.payload.role;
+        state.id = action.payload.user._id;
+        state.status = "auth-fetched";
+
+        if (
+          localStorage.getItem("userData") === null ||
+          localStorage.getItem("role") === null
+        ) {
+          localStorage.setItem("userData", JSON.stringify(action.payload.user));
+          localStorage.setItem("role", action.payload.role);
+        }
+      })
+      .addCase(fetchStaff.pending, (state, action) => {
+        state.status = "pending";
+      })
+      .addCase(fetchStaff.rejected, (state, action) => {
+        state.status = "rejected";
+        state.error = action.error.message;
+      })
       .addCase(fetchRole.fulfilled, (state, action) => {
         state.role = action.payload.role;
-        localStorage.setItem('role', action.payload.role);
-      })
+        localStorage.setItem("role", action.payload.role);
+      });
   },
 });
 
 export default userSlice.reducer;
-export const { logout, setAuth, decodeAuth, setDonorFromLocal} = userSlice.actions;
+export const { logout, setAuth, decodeAuth, setUserFromLocal } =
+  userSlice.actions;
 export const selectAuthToken = (state) => state.user.auth;
 export const selectUserStatus = (state) => state.user.status;
 export const selectRole = (state) => state.user.role;
 export const selectUserId = (state) => state.user.id;
-export const selectDonorData = (state) => state.user.data;
+export const selectUserData = (state) => state.user.data;
 export const selectUserError = (state) => state.user.error;

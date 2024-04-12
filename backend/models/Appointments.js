@@ -13,7 +13,13 @@ const AppointmentSchema = new Schema({
         type: String
     },
     units: {
-        type: Number
+        type: Number,
+        default: 1
+
+    },
+    blood_type: {
+        type: String,
+        required: true
     }
     
 })

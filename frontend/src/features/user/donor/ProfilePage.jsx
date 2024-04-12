@@ -1,7 +1,6 @@
 import React, {useEffect} from "react";
-import { useSelector } from "react-redux";
-import { selectUserData, fetchDonor, setAuth, setUserFromLocal } from "../userSlice.js";
-import store from "../../../app/store.js";
+import { useSelector, useDispatch } from "react-redux";
+import { selectUserData, fetchDonor, setAuth, setUserFromLocal, selectUserId } from "../userSlice.js";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../../../components/Spinner.jsx";
 import Grid from "@mui/material/Grid";
@@ -15,15 +14,15 @@ import Typography from "@mui/material/Typography";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
-
     if (localStorage.getItem('bloodBankAuth') !== null) {
-      store.dispatch(setAuth(localStorage.getItem('bloodBankAuth')));
+      dispatch(setAuth(localStorage.getItem('bloodBankAuth')));
       if (localStorage.getItem('userData') === null ) {
-        store.dispatch(fetchDonor(localStorage.getItem('bloodBankAuth')));
+        dispatch(fetchDonor(localStorage.getItem('bloodBankAuth')));
       }
       else {
-        store.dispatch(setUserFromLocal());
+        dispatch(setUserFromLocal());
       }
     }
     else {
@@ -31,6 +30,7 @@ export default function ProfilePage() {
     }
   }, [])
   const userData = useSelector(selectUserData);
+  const donor_id = useSelector(selectUserId);
   let isLoading = !userData;
 
 
@@ -62,6 +62,9 @@ export default function ProfilePage() {
                 alt="user badge"
               />
             </div>
+          </div>
+          <div style={{textAlign: "left"}}>
+            <Button color="success" variant="contained" onClick={() => {navigate(`/donor/${donor_id}/bookAppointment`)}}>Book A Donation Appointment!!!</Button>
           </div>
           <div>
             <h1 style={{ textAlign: "left" }}>Past Donations</h1>

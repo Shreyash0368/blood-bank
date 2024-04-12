@@ -12,7 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import { FormControl } from "@mui/material";
 import { useDispatch } from "react-redux";
-import {fetchDonor, setAuth } from "./userSlice";
+import {fetchDonor, setAuth } from "../userSlice";
 import { useNavigate } from "react-router-dom";
 
 const bloodGroupOptions = [

@@ -1,9 +1,9 @@
 import React, {useEffect} from "react";
 import { useSelector } from "react-redux";
-import { selectUserData, setAuth, setUserFromLocal, fetchStaff } from "../donor/userSlice";
-import store from "../../app/store.js";
+import { selectUserData, setAuth, setUserFromLocal, fetchStaff } from "../../user/userSlice.js";
+import store from "../../../app/store.js";
 import { useNavigate } from "react-router-dom";
-import Spinner from "../../components/Spinner";
+import Spinner from "../../../components/Spinner.jsx";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";

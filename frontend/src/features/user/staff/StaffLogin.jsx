@@ -8,7 +8,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useDispatch } from 'react-redux';
-import { setAuth, fetchStaff } from '../donor/userSlice';
+import { setAuth, fetchStaff } from '../userSlice';
 import { useNavigate } from 'react-router-dom';
 
 

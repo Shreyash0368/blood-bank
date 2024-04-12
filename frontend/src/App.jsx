@@ -4,11 +4,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Navbar from "./components/Navbar";
 import BloodTypeGrid from "./features/bloddUnits/BloodTypeGrid";
 import BloodTypePage from "./features/bloddUnits/BloodTypePage";
-import DonorSignUp from "./features/donor/DonorSignup";
-import DonorLogin from "./features/donor/DonorLogin";
-import StaffLogin from "./features/staff/StaffLogin";
-import ProfilePage from "./features/donor/ProfilePage";
-import StaffProfilePage from "./features/staff/StaffProfilePage";
+import DonorSignUp from "./features/user/donor/DonorSignup";
+import DonorLogin from "./features/user/donor/DonorLogin";
+import StaffLogin from "./features/user/staff/StaffLogin";
+import ProfilePage from "./features/user/donor/ProfilePage";
+import StaffProfilePage from "./features/user/staff/StaffProfilePage";
+import AppointmentForm from "./features/appointments/AppointmentForm";
 
 
 function App() { 
@@ -38,6 +39,7 @@ function App() {
             <Route exact path='/staffLogin' element={<StaffLogin />} />
             <Route exact path="/donor/profile/" element={<ProfilePage />}/>
             <Route exact path="/staff/profile/" element={<StaffProfilePage />}/>
+            <Route exact path="/donor/:donor_id/bookAppointment" element={<AppointmentForm />}/>
           </Routes>
       </Router>
     </>

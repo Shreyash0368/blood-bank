@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { setAuth, fetchDonor} from './userSlice';
+import { setAuth, fetchDonor} from '../userSlice';
 
 
 

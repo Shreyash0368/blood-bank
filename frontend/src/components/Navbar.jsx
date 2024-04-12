@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { logout } from "../features/donor/userSlice";
+import { logout } from "../features/user/userSlice";
 
 export default function Navbar() {
   const navigate = useNavigate();

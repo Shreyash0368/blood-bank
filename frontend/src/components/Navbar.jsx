@@ -22,6 +22,16 @@ export default function Navbar() {
     navigate("/");
   };  
 
+  const handleUserPage = () => {
+    
+    if (localStorage.getItem('role') === 'donor') {
+      navigate("/donor/profile");
+    }
+    else if (localStorage.getItem('role') === 'staff') {
+      navigate("/staff/profile");
+    }
+  }
+
   return (
     <div style={{ padding: "0 10px" }}>
       <AppBar
@@ -51,7 +61,7 @@ export default function Navbar() {
                   aria-label="account of current user"
                   aria-controls="menu-appbar"
                   aria-haspopup="true"
-                  onClick={() => {navigate('donor/profile')}}
+                  onClick={handleUserPage}
                   color="inherit"
                 >
                   <AccountCircle/>

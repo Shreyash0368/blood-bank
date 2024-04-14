@@ -20,6 +20,10 @@ const AppointmentSchema = new Schema({
     blood_type: {
         type: String,
         required: true
+    },
+    sex: {
+        type: String,
+        required: true
     }
     
 })

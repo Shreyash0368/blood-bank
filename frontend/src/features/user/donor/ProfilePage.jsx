@@ -1,14 +1,19 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectUserData, fetchDonor, setAuth, setUserFromLocal, selectUserId } from "../userSlice.js";
+import {
+  selectUserData,
+  fetchDonor,
+  setAuth,
+  setUserFromLocal,
+  selectUserId,
+} from "../userSlice.js";
+import { selectPending, getDonorAppointments, selectAppointmentStatus } from "../../appointments/appointmentsSlice.js";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../../../components/Spinner.jsx";
+import DonationCard from "../../appointments/DonationCard.jsx";
 import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import AppointmentCard from "../../appointments/AppointmentCard.jsx";
 
 
 
@@ -16,25 +21,25 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    if (localStorage.getItem('bloodBankAuth') !== null) {
-      dispatch(setAuth(localStorage.getItem('bloodBankAuth')));
-      if (localStorage.getItem('userData') === null ) {
-        dispatch(fetchDonor(localStorage.getItem('bloodBankAuth')));
-      }
-      else {
+    if (localStorage.getItem("bloodBankAuth") !== null) {
+      dispatch(setAuth(localStorage.getItem("bloodBankAuth")));
+      if (appointmentStatus !== 'fullfilled') dispatch(getDonorAppointments(localStorage.getItem("bloodBankAuth")));
+      if (localStorage.getItem("userData") === null) {
+        dispatch(fetchDonor(localStorage.getItem("bloodBankAuth")));
+      } else {
         dispatch(setUserFromLocal());
       }
+    } else {
+      navigate("/");
     }
-    else {
-      navigate('/');
-    }
-  }, [])
+  }, []);
+  const appointmentStatus = useSelector(selectAppointmentStatus);
   const userData = useSelector(selectUserData);
   const donor_id = useSelector(selectUserId);
+  const pending = useSelector(selectPending);
   let isLoading = !userData;
 
-
-   return (
+  return (
     <>
       {isLoading ? (
         <h1>
@@ -63,12 +68,34 @@ export default function ProfilePage() {
               />
             </div>
           </div>
-          <div style={{textAlign: "left"}}>
-            <Button color="success" variant="contained" onClick={() => {navigate(`/donor/${donor_id}/bookAppointment`)}}>Book A Donation Appointment!!!</Button>
+          <div style={{ textAlign: "left" }}>
+            <Button
+              color="success"
+              variant="contained"
+              onClick={() => {
+                navigate(`/donor/${donor_id}/bookAppointment`);
+              }}
+            >
+              Book A Donation Appointment!!!
+            </Button>
           </div>
           <div>
+            <h1 style={{ textAlign: "left" }}>Upcoming Appointments</h1>
+            <Grid container spacing={3}>
+              {pending.map((appointment) => (
+                <Grid item key={appointment._id} xs={4}>
+                  <AppointmentCard appointment={appointment} />
+                </Grid>
+              ))}
+            </Grid>
             <h1 style={{ textAlign: "left" }}>Past Donations</h1>
-            <Grid container spacing={3}></Grid>
+            <Grid container spacing={3}>
+              {userData.donations.map((donation) => (
+                <Grid item key={donation.appointmentId} xs={4}>
+                  <DonationCard donation={donation} />
+                </Grid>
+              ))}
+            </Grid>
           </div>
         </div>
       )}

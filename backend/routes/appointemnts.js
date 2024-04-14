@@ -6,7 +6,7 @@ const decodeAuth = require("../middleware/decodeAuth");
 
 router.post("/addAppointment", decodeAuth, async (req, res) => {
   const donor_id = req.user_id;
-  const { date, donor_name, units, blood_type } = req.body;
+  const { date, donor_name, units, blood_type, sex } = req.body;
 
   try {
     const appoint = new Appointments({
@@ -15,6 +15,7 @@ router.post("/addAppointment", decodeAuth, async (req, res) => {
       donor_name,
       units,
       blood_type,
+      sex
     });
     const savedAppoint = await appoint.save();
     res.status(201).send({ success: true, savedAppoint });
@@ -23,8 +24,13 @@ router.post("/addAppointment", decodeAuth, async (req, res) => {
   }
 });
 
-router.patch("/confirmAppointment/:appointmentId", async (req, res) => {
+router.patch("/confirmAppointment/:appointmentId", decodeAuth, async (req, res) => {
   const { appointmentId } = req.params;
+
+  if (req.role !== "staff") {
+    res.status(498).send({ message: "Invalid Token" });
+    return;
+  }
 
   try {
     const appointment = await Appointments.findById(appointmentId);
@@ -52,32 +58,54 @@ router.patch("/confirmAppointment/:appointmentId", async (req, res) => {
   }
 });
 
-router.delete("/deleteAppointment/:appointmentId", async (req, res) => {
-  const { appointmentId } = req.params;
-
-  try {
-    const deletedAppointment = await Appointments.findByIdAndDelete(
-      appointmentId
-    );
-
-    if (!deletedAppointment) {
-      return res.status(404).json({ message: "Appointment not found" });
+router.delete("/deleteAppointment/:appointmentId", decodeAuth, async (req, res) => {
+    const { appointmentId } = req.params;
+    
+    if (req.role !== "staff") {
+      res.status(498).send({ message: "Invalid Token" });
+      return;
     }
 
-    return res.status(201).send({ message: "Appointment succesffuly deleted" });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send({ error });
+    try {
+      const deletedAppointment = await Appointments.findByIdAndDelete(
+        appointmentId
+      );
+
+      if (!deletedAppointment) {
+        return res.status(404).json({ message: "Appointment not found" });
+      }
+
+      return res.status(201).send({ message: "Appointment succesffuly deleted" });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).send({ error });
+    }
   }
-});
+);
 
 router.get("/getAppointment", decodeAuth, async (req, res) => {
   const donor_id = req.user_id;
   try {
-    const donor = await Donor.find({ donor_id });
-    res.status(200).send({ success: true, donations: donor.donations });
+    const appointmentsForDonor = await Appointments.find({ donor_id });
+    res.status(200).send({ success: true, appointments: appointmentsForDonor });
   } catch (error) {
     res.status(500).send({ success: false, error });
+  }
+});
+
+router.get("/getAll", decodeAuth, async (req, res) => {
+  const role = req.role;
+  if (role !== "staff") {
+    res.status(402).send({ message: "Invalid Auth Token" });
+    return;
+  }
+
+  try {
+    const allAppointments = await Appointments.find();
+    res.status(200).send({ success: true, allAppointments });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error });
   }
 });
 

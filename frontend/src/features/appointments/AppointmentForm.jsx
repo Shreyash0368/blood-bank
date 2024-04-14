@@ -18,6 +18,7 @@ import {
   setAuth,
   setUserFromLocal,
 } from "../user/userSlice.js";
+import { addDonorAppointment } from "./appointmentsSlice.js";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../../components/Spinner.jsx";
 
@@ -45,6 +46,25 @@ export default function AppointmentForm({ match }) {
     setUnits(event.target.value);
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const date = new Date(data.get("date"));
+    const currDate = new Date();
+
+    if (currDate > date) {
+      alert('Invalid Appointment Date');
+      return;
+    }
+
+    const donor_id = userData._id;
+    const donor_name = userData.name;
+    const blood_type = userData.blood_type;
+    dispatch(addDonorAppointment({ date, donor_name, units, blood_type })).unwrap().then(() => {
+      alert('Appointment Added')
+    })
+  };
+
   return (
     <>
       {isLoading ? (
@@ -54,11 +74,16 @@ export default function AppointmentForm({ match }) {
           <div style={{ width: "80%" }}>
             <h2 style={{ textAlign: "left" }}>Name: {userData.name}</h2>
             <h2 style={{ textAlign: "left" }}>Email: {userData.email}</h2>
-            <h2 style={{ textAlign: "left" }}>Blood Type: {userData.blood_type}</h2>
-            <h2 style={{ textAlign: "left" }}>DOB (dd/mm/yyyy):{" "}{new Date(userData.DOB).toLocaleDateString("en-GB")}</h2>
+            <h2 style={{ textAlign: "left" }}>
+              Blood Type: {userData.blood_type}
+            </h2>
+            <h2 style={{ textAlign: "left" }}>
+              DOB (dd/mm/yyyy):{" "}
+              {new Date(userData.DOB).toLocaleDateString("en-GB")}
+            </h2>
             <h2 style={{ textAlign: "left" }}>Sex: {userData.sex}</h2>
           </div>
-          <Box component="form" noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <h2>Appointment Details</h2>
             <FormControl fullWidth>
               <FormLabel id="date" style={{ textAlign: "left" }}>
@@ -74,7 +99,7 @@ export default function AppointmentForm({ match }) {
               />
             </FormControl>
 
-            <FormControl fullWidth margin="10px 0">
+            <FormControl fullWidth>
               <FormLabel id="unitCount" style={{ textAlign: "left" }}>
                 Units To Donate
               </FormLabel>

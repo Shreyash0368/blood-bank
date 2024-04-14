@@ -17,7 +17,7 @@ const initialState = bloodUnitsAdapter.getInitialState({
 
 export const createUnit = createAsyncThunk(
   "bloodUnits/createUnit",
-  async (donorData) => {
+  async (donationData) => {
     try {
       const response = await fetch(
         import.meta.env.VITE_SERVER_PATH + "/blood/createUnit",
@@ -26,12 +26,12 @@ export const createUnit = createAsyncThunk(
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(donorData),
+          body: JSON.stringify(donationData),
         }
       );
 
       if (!response.ok) {
-        throw new Error("error");
+        throw new Error(JSON.stringify({status: response.status, messgae: response.statusText}));
       }
       const data = await response.json();
       console.log(data);
@@ -42,7 +42,7 @@ export const createUnit = createAsyncThunk(
   }
 );
 
-export const getAll = createAsyncThunk("bloodUnits/createUnit", async () => {
+export const getAll = createAsyncThunk("bloodUnits/getAll", async () => {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_PATH}/blood/getAll`, {
       method: "GET",
@@ -67,8 +67,7 @@ export const bloodUnitsSlice = createSlice({
     }
   },
   extraReducers(builder) {
-    builder
-      // .addCase(createUnit.fulfilled, bloodUnitsAdapter.addOne)
+    builder      
       .addCase(getAll.pending, (state, action) => {
         state.status = "loading";
       })
@@ -79,7 +78,19 @@ export const bloodUnitsSlice = createSlice({
       .addCase(getAll.rejected, (state, action) => {
         state.status = "rejected";
         state.error = action.error.message;
-      });
+      })
+      .addCase(createUnit.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(createUnit.fulfilled, (state, action) => {
+        state.status = "fulfilled";
+        bloodUnitsAdapter.addOne(state, action.payload);
+      })
+      .addCase(createUnit.rejected, (state, action) => {
+        state.status = "rejected";
+        state.error = action.error.message;
+      })
+      
   },
 });
 

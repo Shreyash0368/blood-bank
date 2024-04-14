@@ -85,6 +85,8 @@ export default function StaffProfilePage() {
           return;
         }
 
+        location.reload();
+
     } catch (error) {
       console.log(error);
     }

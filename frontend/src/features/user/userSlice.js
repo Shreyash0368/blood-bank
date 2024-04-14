@@ -149,7 +149,7 @@ export const userSlice = createSlice({
         state.data = action.payload.donor;
         state.role = action.payload.role;
         state.id = action.payload.donor._id;
-        state.status = "auth-fetched";
+        state.status = "fullfilled";
 
         if (
           localStorage.getItem("userData") === null ||
@@ -173,7 +173,7 @@ export const userSlice = createSlice({
         state.data = action.payload.user;
         state.role = action.payload.role;
         state.id = action.payload.user._id;
-        state.status = "auth-fetched";
+        state.status = "fullfilled";
 
         if (
           localStorage.getItem("userData") === null ||
@@ -191,7 +191,7 @@ export const userSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(fetchRole.fulfilled, (state, action) => {
-        state.role = action.payload.role;
+        state.role = action.payload.role;        
         localStorage.setItem("role", action.payload.role);
       });
   },

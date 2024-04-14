@@ -60,7 +60,8 @@ export default function AppointmentForm({ match }) {
     const donor_id = userData._id;
     const donor_name = userData.name;
     const blood_type = userData.blood_type;
-    dispatch(addDonorAppointment({ date, donor_name, units, blood_type })).unwrap().then(() => {
+    const sex = userData.sex;
+    dispatch(addDonorAppointment({ date, donor_name, units, blood_type, sex })).unwrap().then(() => {
       alert('Appointment Added')
     })
   };

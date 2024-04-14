@@ -9,7 +9,7 @@ const initialState = {
 export const addDonorAppointment = createAsyncThunk(
   "appointments/addDonorAppointment",
   async (appointmentData, thunkAPI) => {
-    const { date, donor_name, units, blood_type } = appointmentData;
+    const { date, donor_name, units, blood_type, sex } = appointmentData;
 
     try {
       const appointment = await fetch(
@@ -20,7 +20,7 @@ export const addDonorAppointment = createAsyncThunk(
             "Content-Type": "application/json",
             Authorization: localStorage.getItem("bloodBankAuth"),
           },
-          body: JSON.stringify({ date, donor_name, units, blood_type }),
+          body: JSON.stringify({ date, donor_name, units, blood_type, sex }),
         }
       );
 

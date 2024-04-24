@@ -18,6 +18,6 @@ This project utilizes the powerful MERN stack for development:
 * React.js: A JavaScript library for creating a dynamic and interactive user interface.
 * Node.js: A JavaScript runtime environment that allows server-side execution of code.
 
-## Additionally, Redux with Redux Toolkit is implemented to ensure efficient application state management.
+### Additionally, Redux with Redux Toolkit is implemented to ensure efficient application state management.
 
 ### Feel free to explore the codebase and contribute to this project!

@@ -1,4 +1,4 @@
-# Blood Bank Web App
+# BoodStream Web App
 This project simplifies blood donation for both donors and staff through a user-friendly web application.
 
 ## Donors: Enjoy a seamless experience with features like:
